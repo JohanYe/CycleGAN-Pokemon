@@ -30,6 +30,10 @@ class PokemonData(torch.utils.data.Dataset):
 
         image_path = os.path.join(self.images_path, self.images_name[idx])
         image = Image.open(image_path)
+        if len(image.getbands()) == 4:  # Fix in png.
+            im2arr = np.array(image)
+            image = Image.fromarray(im2arr[:, :, :-1])
+        image = image.resize((215, 215), Image.BILINEAR)
         X = self.transform(image)
 
         return X

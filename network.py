@@ -134,7 +134,7 @@ class CycleGenerator(nn.Module):
         out = F.relu(self.deconv2(out))
 
         # tanh applied to last layer
-        out = F.tanh(self.deconv3(out))
+        out = torch.tanh(self.deconv3(out))
 
         return out
 

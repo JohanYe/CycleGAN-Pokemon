@@ -1,13 +1,11 @@
 import loss
 import torch.optim as optim
 import torch
-import helper
-import matplotlib.pyplot as plt
-import scipy.misc
 import numpy as np
 import torchvision
-from PIL import Image
+import os
 import imageio
+import torchvision.transforms as transforms
 
 
 # helper scale function
@@ -21,11 +19,24 @@ def scale(x, feature_range=(-1, 1)):
     x = x * (max - min) + min
     return x
 
+def unnormalize_images(images):
+    """ Return tensor of images to [0:255] space from [-1:1] for plotting. """
+    unnormalized = torch.zeros_like(images)
+    t = transforms.Normalize(
+        mean=[-0.5 / 0.5, -0.5 / 0.5, -0.5 / 0.5],
+        std=[1 / 0.5, 1 / 0.5, 1 / 0.5])
+    for i, image in enumerate(images):
+        unnormalized[i] = t(image)*255
+    return unnormalized
+
 
 def training_loop(dataloader_X, dataloader_Y, #test_dataloader_X, test_dataloader_Y,
                   n_epochs=1000,
-                  G_XtoY=None, G_YtoX=None, D_X=None, D_Y=None, lr=0.0002, beta1=0.5, beta2=0.999, save_path = '/content/drive/My Drive/Project_Pokemon/'):
+                  G_XtoY=None, G_YtoX=None, D_X=None, D_Y=None, lr=0.0002, beta1=0.5, beta2=0.999, save_path = './'):
 
+    #If save folder does not exist, create it
+    if not os.path.isdir(save_path):
+        os.mkdir(save_path)
     g_params = list(G_XtoY.parameters()) + list(G_YtoX.parameters())  # Get generator parameters
 
     # Create optimizers for the generators and discriminators
@@ -62,11 +73,11 @@ def training_loop(dataloader_X, dataloader_Y, #test_dataloader_X, test_dataloade
 
         images_X = iter_X.next()
         real_images = images_X
-        images_X = scale(images_X)  # make sure to scale to a range -1 to 1
+        # images_X = scale(images_X)  # make sure to scale to a range -1 to 1
 
         images_Y = iter_Y.next()
         real_images = images_X
-        images_Y = scale(images_Y)
+        # images_Y = scale(images_Y)
 
         # move images to GPU if available (otherwise stay on CPU)
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -173,10 +184,12 @@ def training_loop(dataloader_X, dataloader_Y, #test_dataloader_X, test_dataloade
 
             # generate image
             X_fake = G_XtoY(images_X)
+            X_fake = unnormalize_images(X_fake)
+            images_X = unnormalize_images(images_X)
             grid_image_real = torchvision.utils.make_grid(images_X.cpu())
             grid_image_fake = torchvision.utils.make_grid(X_fake.cpu())
             grid_image = torch.cat((grid_image_real, grid_image_fake), 1)
-            saveim = np.transpose(grid_image.data.numpy(), (1, 2, 0))  
+            saveim = np.transpose(grid_image.data.numpy().astype(np.uint8), (1, 2, 0))
             # plt.figure(figsize=(20, 10))
             # plt.imshow(saveim)
             # plt.savefig(filename + '_' + 'XtoY.jpg')
@@ -185,10 +198,12 @@ def training_loop(dataloader_X, dataloader_Y, #test_dataloader_X, test_dataloade
             print('Saved {}'.format(path))
 
             Y_fake = G_YtoX(images_Y)
+            Y_fake = unnormalize_images(Y_fake)
+            images_Y = unnormalize_images(images_Y)
             grid_image_real = torchvision.utils.make_grid(images_Y.cpu())
             grid_image_fake = torchvision.utils.make_grid(Y_fake.cpu())
             grid_image = torch.cat((grid_image_real, grid_image_fake), 1)
-            saveim = np.transpose(grid_image.data.numpy(), (1, 2, 0))  
+            saveim = np.transpose(grid_image.data.numpy().astype(np.uint8), (1, 2, 0))
             # plt.figure(figsize=(20, 10))
             # plt.imshow(saveim)
             # plt.savefig(filename + '_' + 'YtoX.jpg')
@@ -210,7 +225,5 @@ def training_loop(dataloader_X, dataloader_Y, #test_dataloader_X, test_dataloade
     #         # Save the model parameters
     #         if epoch % checkpoint_every == 0:
     #             checkpoint(epoch, G_XtoY, G_YtoX, D_X, D_Y)
-
-
 
     return losses, G_XtoY, G_YtoX, D_X, D_Y
