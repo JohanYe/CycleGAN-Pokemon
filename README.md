@@ -10,7 +10,7 @@ Original paper: https://arxiv.org/abs/1703.10593
 
 
 <b> Observations During Training </b>
-* Sometimes identical mapping will be learning after a lot of training
+* Sometimes identical mapping will be learned after a lot of training
 * Some colors are mapped indescriminantly (often blue and red in between fire and water)
 * Change in learning rate can cause large changes at times
 
