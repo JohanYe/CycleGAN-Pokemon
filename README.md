@@ -11,7 +11,7 @@ Original paper: https://arxiv.org/abs/1703.10593
 
 <b> Observations During Training </b>
 * Sometimes identical mapping will be learned after a lot of training
-* Some colors are mapped indescriminantly (often blue and red in between fire and water)
+* Sometimes colors are mapped indescriminantly (often blue and red in between fire and water)
 * Change in learning rate can cause large changes at times
 
 ### Display of Results ###
@@ -24,7 +24,7 @@ Original paper: https://arxiv.org/abs/1703.10593
 #### Grass to Water ####
 ![Grass_Water](Examples/Grass_Water.jpg)
 
-#### Water to Grass ####
+#### Water to Grass (Note how red and pink barely changes) ####
 ![Water_Grass](Examples/Water_Grass.jpg)
 
 #### Electric to Water ####
