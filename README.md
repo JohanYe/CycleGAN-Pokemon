@@ -1,4 +1,5 @@
 # CycleGAN to Swap Pokemon Types
+Project conducted with Hyemee Sohn
 An implementation of CycleGAN in order to swap Pokemon types.
 
 Original paper: https://arxiv.org/abs/1703.10593
