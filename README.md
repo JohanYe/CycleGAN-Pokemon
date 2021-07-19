@@ -7,7 +7,7 @@ Original paper: https://arxiv.org/abs/1703.10593
 
 <b> Potential Improvements to Investigate </b>
 * Add new different pictures of same pokemon to increase training set
-* Implement distill's conv-resample to attempt to remove checkerboard pattern
+* Implement distill's conv-resample to attempt to remove checkerboard pattern artifact
 * Implementation of InstaGAN in order to change geometric shape
 
 
