@@ -9,6 +9,7 @@ Original paper: https://arxiv.org/abs/1703.10593
 * Add new different pictures of same pokemon to increase training set
 * Implement distill's conv-resample to attempt to remove checkerboard pattern artifact
 * Implementation of InstaGAN in order to change geometric shape
+* Implement the identity mapping loss [junyanz repo](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/issues/322).
 
 
 <b> Observations During Training </b>
